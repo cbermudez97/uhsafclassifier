@@ -1,10 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:safclassifier/models/classification_options.dart';
 
 part 'person_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class PersonModel {
+  int id;
   DateTime date;
   String municipality;
   String saf;
@@ -41,6 +43,7 @@ class PersonModel {
   String causesOthers;
 
   PersonModel({
+    this.id,
     this.date,
     this.municipality,
     this.saf,
