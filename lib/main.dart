@@ -1,89 +1,100 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:safclassifier/widgets/widgets.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Clasificador SAF',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        accentColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'GothamRounded',
       ),
-      home: MyHomePage(title: 'Clasificador SAF'),
+      home: HomePage(title: 'Clasificador SAF'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
+class HomePage extends StatelessWidget {
   final String title;
+  final keyForm = GlobalKey<FormState>();
+  final controller = TextEditingController();
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  String ip;
-  String port;
+  HomePage({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
       ),
       body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                'Entre la dirección de la Base de Datos',
-                style: TextStyle(
-                  fontSize: 15,
+        child: Form(
+          key: keyForm,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Text(
+                  'Entre la dirección del servidor',
+                  style: Theme.of(context).primaryTextTheme.headline6,
                 ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Ip o Url',
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: SAFTextField(
+                  label: 'Servidor',
+                  hint: 'http://localhost:8000',
+                  controller: controller,
+                  keyboardType: TextInputType.url,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'El servidor es obligatorio';
+                    }
+                    return null;
+                  },
                 ),
-                onChanged: (value) {
-                  ip = value;
-                },
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Puerto',
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlineButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 15,
+                            horizontal: 20,
+                          ),
+                          child: Text('Continuar'),
+                        ),
+                        onPressed: () async {
+                          if (keyForm.currentState.validate()) {
+                            log('Moving to new page with host=${controller.text}');
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                onChanged: (value) {
-                  port = value;
-                },
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: RaisedButton(
-                child: Text('Continuar'),
-                onPressed: () {
-                  print('Moving to new page with ip=$ip and port=$port');
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
