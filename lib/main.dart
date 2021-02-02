@@ -1,11 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:safclassifier/views/person_classifier_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:safclassifier/widgets/widgets.dart';
-
-import 'views/person_clasifier_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -114,6 +113,7 @@ class HomePage extends StatelessWidget {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (_) => PersonClassifierView(
+                                  title: title,
                                   host: controller.text.trim(),
                                 ),
                               ),

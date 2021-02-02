@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:safclassifier/models/classification_options.dart';
 
 part 'person_model.g.dart';
@@ -75,6 +74,6 @@ class PersonModel {
 
 extension DateTimeExt on DateTime {
   String toStr() {
-    return '${this.day}-${this.month}-${this.year}';
+    return '${this.day < 10 ? '0${this.day}' : this.day}/${this.month < 10 ? '0${this.month}' : this.month}/${this.year}';
   }
 }
