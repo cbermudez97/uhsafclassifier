@@ -8,7 +8,7 @@ part of 'person_model.dart';
 
 PersonModel _$PersonModelFromJson(Map<String, dynamic> json) {
   return PersonModel(
-    id: json['id'] as int,
+    id: json['id'] as String,
     date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
     municipality: json['municipality'] as String,
     saf: json['saf'] as String,
@@ -100,4 +100,5 @@ const _$CausesTagsEnumMap = {
   CausesTags.Distance: 'causes_distance',
   CausesTags.LowQuality: 'causes_low_quality',
   CausesTags.Price: 'causes_price',
+  CausesTags.NoDir: 'causes_no_dir',
 };

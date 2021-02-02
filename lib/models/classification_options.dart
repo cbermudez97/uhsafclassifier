@@ -11,4 +11,6 @@ enum CausesTags {
   LowQuality,
   @JsonValue('causes_price')
   Price,
+  @JsonValue('causes_no_dir')
+  NoDir
 }

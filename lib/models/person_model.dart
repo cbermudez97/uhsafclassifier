@@ -6,7 +6,7 @@ part 'person_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class PersonModel {
-  int id;
+  String id;
   DateTime date;
   String municipality;
   String saf;

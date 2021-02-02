@@ -26,7 +26,6 @@ class PersonClassifierBloc
   }
 
   @override
-  // TODO: implement initialState
   get initialState => InitialPersonClassificatorState();
 
   @override
@@ -38,7 +37,7 @@ class PersonClassifierBloc
       if (event.previousModel != null) {
         try {
           var response = await this.dio.put(
-            'api/v1/classify/${event.previousModel.id}',
+            '/api/v1/classify/${event.previousModel.id}',
             data: {
               'tags': event.previousModel.causesTags,
               'others': event.previousModel.causesOthers,
@@ -51,17 +50,17 @@ class PersonClassifierBloc
 
       //Load Next Model
       try {
-        var response = await this.dio.get<Map<String, dynamic>>('api/v1/empty');
+        var response =
+            await this.dio.get<Map<String, dynamic>>('/api/v1/empty');
 
         var data = response.data;
 
         yield LoadedPersonClassificatorState(PersonModel.fromJson(data));
       } on DioError catch (e) {
+        print(e.message);
         if (e.response.statusCode == 404) {
-          print(e.message);
           yield SucessPersonClassificatorState();
         } else {
-          print(e.message);
           yield InitialPersonClassificatorState();
         }
       } catch (e) {
