@@ -8,6 +8,7 @@ part of 'person_model.dart';
 
 PersonModel _$PersonModelFromJson(Map<String, dynamic> json) {
   return PersonModel(
+    id: json['id'] as int,
     date: json['date'] == null ? null : DateTime.parse(json['date'] as String),
     municipality: json['municipality'] as String,
     saf: json['saf'] as String,
@@ -36,6 +37,7 @@ PersonModel _$PersonModelFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$PersonModelToJson(PersonModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'date': instance.date?.toIso8601String(),
       'municipality': instance.municipality,
       'saf': instance.saf,
