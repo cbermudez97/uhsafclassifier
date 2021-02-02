@@ -72,3 +72,9 @@ class PersonModel {
 
   Map<String, dynamic> toJson() => _$PersonModelToJson(this);
 }
+
+extension DateTimeExt on DateTime {
+  String toStr() {
+    return '${this.day}-${this.month}-${this.year}';
+  }
+}
