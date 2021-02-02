@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:safclassifier/widgets/widgets.dart';
 
+import 'views/person_clasifier_view.dart';
+
 void main() {
   runApp(App());
 }
@@ -86,6 +88,11 @@ class HomePage extends StatelessWidget {
                         onPressed: () async {
                           if (keyForm.currentState.validate()) {
                             log('Moving to new page with host=${controller.text}');
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                                    builder: (_) => PersonClassifierView(
+                                          host: controller.text,
+                                        )));
                           }
                         },
                       ),
