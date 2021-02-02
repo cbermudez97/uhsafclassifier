@@ -1,1 +1,1 @@
-export 'blocs/person_classificator_bloc.dart';
+export 'blocs/person_classifier_bloc.dart';

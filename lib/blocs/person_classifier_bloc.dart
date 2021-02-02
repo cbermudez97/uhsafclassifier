@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:safclassifier/models.dart';
+import 'package:safclassifier/models/models.dart';
 
-class PersonClassificatorBloc
+class PersonClassifierBloc
     extends Bloc<PersonClassificatorEvent, PersonClassificatorState> {
   Dio dio;
-  PersonClassificatorBloc(String baseUrl) {
+
+  PersonClassifierBloc(String baseUrl) {
     var options = BaseOptions(
         baseUrl: baseUrl,
         connectTimeout: 5000,
