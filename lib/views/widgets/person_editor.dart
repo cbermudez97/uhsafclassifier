@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,24 +8,20 @@ import 'package:safclassifier/models/models.dart';
 
 class PersonEditor extends StatefulWidget {
   @override
-  _PersonEditorState createState() => _PersonEditorState();
+  PersonEditorState createState() => PersonEditorState();
 }
 
-class _PersonEditorState extends State<PersonEditor> {
+class PersonEditorState extends State<PersonEditor> {
   PersonModel personModel;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonClassifierBloc, PersonClassificatorState>(
+    return BlocConsumer<PersonClassifierBloc, PersonClassifierState>(
+      listener: (context, state) {},
       builder: (context, state) {
-        if (state is InitialPersonClassificatorState) {
-          context.bloc<PersonClassifierBloc>().add(LoadPersonClassificatorEvent(
-                previousModel: personModel,
-              ));
-        }
-        if (state is LoadedPersonClassificatorState) {
+        if (state is LoadedPersonClassifierState) {
           personModel = state.person;
-          print('Loaded ${personModel.fullName}');
+          log('Loaded ${personModel.fullName}');
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -32,18 +30,18 @@ class _PersonEditorState extends State<PersonEditor> {
                 child: RaisedButton(
                   child: Text('Siguiente'),
                   onPressed: () {
-                    context
-                        .bloc<PersonClassifierBloc>()
-                        .add(LoadPersonClassificatorEvent(
-                          previousModel: personModel,
-                        ));
+                    context.bloc<PersonClassifierBloc>().add(
+                          LoadPersonClassifierEvent(
+                            previousModel: personModel,
+                          ),
+                        );
                   },
                 ),
               )
             ],
           );
         }
-        if (state is LoadingPersonClassificatorState) {
+        if (state is LoadingPersonClassifierState) {
           return Center(
             child: CircularProgressIndicator(),
           );

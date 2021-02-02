@@ -88,11 +88,13 @@ class HomePage extends StatelessWidget {
                         onPressed: () async {
                           if (keyForm.currentState.validate()) {
                             log('Moving to new page with host=${controller.text}');
-                            Navigator.of(context)
-                                .pushReplacement(MaterialPageRoute(
-                                    builder: (_) => PersonClassifierView(
-                                          host: controller.text,
-                                        )));
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (_) => PersonClassifierView(
+                                  host: controller.text.trim(),
+                                ),
+                              ),
+                            );
                           }
                         },
                       ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:safclassifier/models/models.dart';
 
 class PersonClassifierBloc
-    extends Bloc<PersonClassificatorEvent, PersonClassificatorState> {
+    extends Bloc<PersonClassifierEvent, PersonClassifierState> {
   Dio dio;
 
   PersonClassifierBloc(String baseUrl) {
@@ -26,82 +27,85 @@ class PersonClassifierBloc
   }
 
   @override
-  get initialState => InitialPersonClassificatorState();
+  get initialState => LoadingPersonClassifierState();
 
   @override
-  Stream<PersonClassificatorState> mapEventToState(event) async* {
-    if (event is LoadPersonClassificatorEvent) {
-      yield LoadingPersonClassificatorState();
+  Stream<PersonClassifierState> mapEventToState(event) async* {
+    if (event is LoadPersonClassifierEvent) {
+      yield LoadingPersonClassifierState();
 
-      //Update Previous
+      // Update Previous
       if (event.previousModel != null) {
         try {
-          var response = await this.dio.put(
+          await this.dio.put(
             '/api/v1/classify/${event.previousModel.id}',
             data: {
               'tags': event.previousModel.causesTags,
               'others': event.previousModel.causesOthers,
             },
           );
+          yield SuccessPersonClassifierState();
         } on DioError catch (e) {
-          print(e.message);
+          log(e.message);
         }
       }
 
-      //Load Next Model
+      // Load Next Model
       try {
-        var response =
-            await this.dio.get<Map<String, dynamic>>('/api/v1/empty');
-
+        var response = await this.dio.get<Map<String, dynamic>>('/api/v1/empty');
         var data = response.data;
-
-        yield LoadedPersonClassificatorState(PersonModel.fromJson(data));
+        yield LoadedPersonClassifierState(PersonModel.fromJson(data));
       } on DioError catch (e) {
-        print(e.message);
+        log(e.message);
         if (e.response.statusCode == 404) {
-          yield SucessPersonClassificatorState();
+          yield FinishPersonClassifierState();
         } else {
-          yield InitialPersonClassificatorState();
+          yield ErrorPersonClassifierState(e.message);
         }
       } catch (e) {
-        print(e);
-        yield InitialPersonClassificatorState();
+        log(e.toString());
+        yield ErrorPersonClassifierState(e.toString());
       }
-    } else
-      yield InitialPersonClassificatorState();
+    }
   }
 }
 
-//EVENTS
-abstract class PersonClassificatorEvent extends Equatable {
-  const PersonClassificatorEvent();
+// EVENTS
+abstract class PersonClassifierEvent extends Equatable {
+  const PersonClassifierEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadPersonClassificatorEvent extends PersonClassificatorEvent {
+class LoadPersonClassifierEvent extends PersonClassifierEvent {
   final PersonModel previousModel;
 
-  const LoadPersonClassificatorEvent({this.previousModel});
+  const LoadPersonClassifierEvent({this.previousModel});
 }
 
-//STATES
-abstract class PersonClassificatorState extends Equatable {
-  const PersonClassificatorState();
+// STATES
+abstract class PersonClassifierState extends Equatable {
+  const PersonClassifierState();
 
   @override
   List<Object> get props => [];
 }
 
-class InitialPersonClassificatorState extends PersonClassificatorState {}
+class LoadingPersonClassifierState extends PersonClassifierState {}
 
-class LoadingPersonClassificatorState extends PersonClassificatorState {}
-
-class LoadedPersonClassificatorState extends PersonClassificatorState {
+class LoadedPersonClassifierState extends PersonClassifierState {
   final PersonModel person;
 
-  const LoadedPersonClassificatorState(this.person);
+  const LoadedPersonClassifierState(this.person);
 }
 
-class SucessPersonClassificatorState extends PersonClassificatorState {}
+class FinishPersonClassifierState extends PersonClassifierState {}
+
+class SuccessPersonClassifierState extends LoadingPersonClassifierState {}
+
+class ErrorPersonClassifierState extends PersonClassifierState {
+  final String message;
+
+  const ErrorPersonClassifierState(this.message);
+}

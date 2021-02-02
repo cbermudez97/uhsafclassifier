@@ -7,16 +7,16 @@ import 'widgets/person_editor.dart';
 class PersonClassifierView extends StatefulWidget {
   final String host;
 
-  const PersonClassifierView({Key key, this.host}) : super(key: key);
+  const PersonClassifierView({Key key, @required this.host}) : super(key: key);
 
   @override
-  _PersonClassifierViewState createState() => _PersonClassifierViewState(host);
+  PersonClassifierViewState createState() => PersonClassifierViewState(host);
 }
 
-class _PersonClassifierViewState extends State<PersonClassifierView> {
+class PersonClassifierViewState extends State<PersonClassifierView> {
   final String host;
 
-  _PersonClassifierViewState(this.host);
+  PersonClassifierViewState(this.host);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +25,12 @@ class _PersonClassifierViewState extends State<PersonClassifierView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BlocProvider<PersonClassifierBloc>(
-            create: (_) => PersonClassifierBloc(host),
+            create: (_) => PersonClassifierBloc(host)
+              ..add(
+                LoadPersonClassifierEvent(),
+              ),
             child: PersonEditor(),
-          )
+          ),
         ],
       ),
     );
