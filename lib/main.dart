@@ -1,15 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:safclassifier/widgets/widgets.dart';
 
 import 'views/person_clasifier_view.dart';
 
-void main() {
-  runApp(App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var prefs = await SharedPreferences.getInstance();
+
+  runApp(App(prefs: prefs));
 }
 
 class App extends StatelessWidget {
+  final SharedPreferences prefs;
+
+  const App({Key key, this.prefs}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +29,10 @@ class App extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'GothamRounded',
       ),
-      home: HomePage(title: 'Clasificador SAF'),
+      home: HomePage(
+        title: 'Clasificador SAF',
+        prefs: prefs,
+      ),
     );
   }
 }
@@ -29,8 +41,18 @@ class HomePage extends StatelessWidget {
   final String title;
   final keyForm = GlobalKey<FormState>();
   final controller = TextEditingController();
+  final SharedPreferences prefs;
+  final String keyHost = 'previous-url';
 
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({
+    Key key,
+    this.title,
+    this.prefs,
+  }) : super(key: key) {
+    if (prefs.containsKey(keyHost)) {
+      controller.text = prefs.getString(keyHost);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +110,7 @@ class HomePage extends StatelessWidget {
                         onPressed: () async {
                           if (keyForm.currentState.validate()) {
                             log('Moving to new page with host=${controller.text}');
+                            prefs.setString(keyHost, controller.text);
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (_) => PersonClassifierView(
