@@ -37,11 +37,12 @@ class PersonClassifierBloc
       // Update Previous
       if (event.previousModel != null) {
         try {
+          var data = event.previousModel.toJson();
           await this.dio.put(
             '/api/v1/classify/${event.previousModel.id}',
             data: {
-              'tags': event.previousModel.causesTags,
-              'others': event.previousModel.causesOthers,
+              'tags': data['causes_tags'],
+              'others': data['causes_others'],
             },
           );
           yield SuccessPersonClassifierState();
